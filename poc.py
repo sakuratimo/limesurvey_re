@@ -28,9 +28,9 @@ def login(host):
     #print(r2.status_code)
     return result1,result2
 
-def check(result1,result2,host):
+def check(result1,host,result2):
    # if("Nino Cosic" in result1 and "Nino Cosic" not in result2):
-    if( result1 is None and result2 is not None):
+    if(result1!='' and result2==''):
         print('PoC success!')
         return 0
     else:
@@ -43,5 +43,6 @@ if __name__ == "__main__":
     result=login(host)
     result1=result[0]
     result2=result[1]
-
+    print(result1)
+    print(result2)
     check(result1,host,result2)

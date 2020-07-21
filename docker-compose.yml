@@ -1,0 +1,61 @@
+version: '2'
+
+services:
+
+  web:
+    image: acspri/limesurvey:4.1.11
+    ports:
+      - 8082:80
+    environment:
+      LIMESURVEY_DB_PASSWORD: example
+      LIMESURVEY_ADMIN_USER: admin
+      LIMESURVEY_ADMIN_PASSWORD: password
+      LIMESURVEY_ADMIN_NAME: Lime Administrator
+      LIMESURVEY_ADMIN_EMAIL: lime@lime.lime
+      LIMESURVEY_USE_INNODB: 1
+    container_name: web-app
+    volumes:
+       - "./image/donate.png:/var/www/html/themes/admin/Sea_Green/images/donate.png"
+       - "./image:/usr/image"
+       - "/BaltimoreCyberTrustRoot.crt.pem:/var/www/html/BaltimoreCyberTrustRoot.crt.pem"
+       - "./image/logo.png:/var/www/html/themes/survey/fruity/files/logo.png"
+       - "./image/logo.png:/var/www/html/themes/admin/Sea_Green/images/logo.png"
+       - "./image/donate.png:/var/www/html/themes/survey/fruity/files/donate.png"
+       - "./image/limesurvey_logo.png:/var/www/html/themes/admin/Sea_Green/images/limesurvey_logo.png"
+       - "./image/survey_list_header.png:/var/www/html/themes/survey/fruity/files/survey_list_header.png"
+       - "./image/poweredby.png:/var/www/html/themes/survey/fruity/files/poweredby.png"
+       - "./image/favicon.ico:/var/www/html/themes/admin/favicon.ico"
+  mysql:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    container_name: web-database
+
+  config:  
+    build:
+      context: .
+      dockerfile:  Dockerfile_config
+    container_name: config-app
+    depends_on:
+      - web 
+
+
+  poc:
+    build:
+      context: .
+      dockerfile: Dockerfile_poc
+    container_name: poc-app
+    depends_on:
+      - web
+      - config
+
+
+
+  ids:
+    image: fixel/zeek:latest
+    network_mode: service:web
+    container_name: zeek
+    volumes:
+      - ./ids/logs:/usr/local/zeek/logs
+      - ./ids/policy_detect_fpm:/usr/local/zeek/share/zeek/policy/policy_detect_fpm
+    command: -C -i eth0 policy/policy_detect_fpm

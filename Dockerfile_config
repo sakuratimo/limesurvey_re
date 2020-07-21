@@ -1,0 +1,14 @@
+FROM ubuntu:18.04
+USER root
+
+ADD config.sh /config.sh
+ADD config.py /config.py
+ADD test/limesurvey_survey_113688.lss /test/limesurvey_survey_113688.lss
+ADD test/limesurvey_survey_447419.lss /test/limesurvey_survey_447419.lss
+ADD test/limesurvey_survey_449682.lss /test/limesurvey_survey_449682.lss
+ADD test/limesurvey_survey_761995.lss /test/limesurvey_survey_761995.lss
+ADD requirements_config.txt /requirements_config.txt
+RUN chmod +x /config.sh 
+
+
+CMD ["bash", "-c", "echo 1 && bash /config.sh"]

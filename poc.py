@@ -43,6 +43,4 @@ if __name__ == "__main__":
     result=login(host)
     result1=result[0]
     result2=result[1]
-    print(result1)
-    print(result2)
     check(result1,host,result2)
